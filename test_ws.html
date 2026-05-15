@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WebSocket Test</title>
+</head>
+<body>
+    <h2>Live V2X Telemetry Stream</h2>
+    <div id="messages" style="font-family: monospace; height: 500px; overflow-y: scroll; background: #000; color: #0f0; padding: 10px;"></div>
+    
+    <script>
+        var ws = new WebSocket("ws://localhost:8000/ws/telemetry");
+        var messages = document.getElementById('messages');
+        
+        function logMessage(text, color) {
+            var newData = document.createElement('div');
+            newData.innerHTML = `<span style="color: ${color}">${text}</span>`;
+            messages.prepend(newData);
+        }
+
+        // Connection opened
+        ws.onopen = function(event) {
+            logMessage("[SYSTEM] WebSocket Connection Successfully Established!", "yellow");
+        };
+
+        // Listen for messages
+        ws.onmessage = function(event) {
+            logMessage(">>> " + event.data, "#0f0");
+        };
+
+        // Listen for errors
+        ws.onerror = function(error) {
+            logMessage("[ERROR] WebSocket failed to connect. Check terminal 2!", "red");
+        };
+
+        // Connection closed
+        ws.onclose = function(event) {
+            logMessage("[SYSTEM] WebSocket Connection Closed by Server.", "orange");
+        };
+    </script>
+</body>
+</html>
