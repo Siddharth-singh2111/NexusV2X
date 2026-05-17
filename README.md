@@ -13,7 +13,7 @@ NexusV2X is a highly scalable, real-time Vehicle-to-Everything (V2X) telemetry a
 
 - **SUMO Traffic Simulation:** Simulates realistic vehicular movement, generating raw GPS coordinates.
 - **Sensor Noise Injection:** Applies Rayleigh Fading logic to simulate real-world wireless and GPS inaccuracies.
-- **Kalman Filtering:** Smooths out noisy GPS data in the backend to calculate precise vehicle trajectories.
+- **Kalman Filtering:** Smooths out noisy GPS  into telemetery data in the backend to calculate precise vehicle trajectories.
 - **Real-Time Crash Detection:** Utilizes **Redis Geospatial (GEO)** indexing to detect vehicles coming within a 1.5-meter radius of one another.
 - **High-Throughput Streaming:** Uses **Apache Kafka** to handle massive volumes of incoming telemetry data asynchronously.
 - **Premium Visualization:** A Next.js 3D web dashboard powered by **Deck.GL**, featuring dynamic heatmaps, vehicle scatterplots, and pulse animations for collision alerts.

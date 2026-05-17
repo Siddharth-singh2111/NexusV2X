@@ -88,7 +88,13 @@ async def consume_kafka():
         auto_offset_reset='latest'
     )
     
-    await consumer.start()
+    while True:
+        try:
+            await consumer.start()
+            break
+        except Exception as e:
+            print(f"Waiting for Kafka to be ready... ({e})")
+            await asyncio.sleep(5)
     print("DEBUG: FastAPI Backend listening for telemetry and crashes...")
     
     try:

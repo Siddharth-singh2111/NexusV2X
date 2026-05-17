@@ -19,9 +19,15 @@ export default function Dashboard() {
   const [vehicles, setVehicles] = useState<{ [id: string]: number[] }>({});
   const [crashes, setCrashes] = useState<{ [id: string]: number[] }>({});
 
+  const [isConnected, setIsConnected] = useState(false);
+
   useEffect(() => {
     const WS_URL = process.env.NEXT_PUBLIC_WS_URL || "ws://localhost:8000/ws/telemetry";
     const ws = new WebSocket(WS_URL);
+
+    ws.onopen = () => setIsConnected(true);
+    ws.onclose = () => setIsConnected(false);
+    ws.onerror = () => setIsConnected(false);
 
     ws.onmessage = (event) => {
       const data = JSON.parse(event.data);
@@ -126,9 +132,16 @@ export default function Dashboard() {
           </div>
         </div>
         
-        <div className="flex items-center gap-2 bg-emerald-900/30 border border-emerald-500/50 text-emerald-400 px-4 py-2.5 rounded-full font-mono text-sm tracking-wider shadow-[0_0_20px_rgba(16,185,129,0.2)] backdrop-blur-md">
-          <div className="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></div>
-          HEATMAP ONLINE
+        <div className="flex flex-col gap-2 items-end">
+          <div className="flex items-center gap-2 bg-emerald-900/30 border border-emerald-500/50 text-emerald-400 px-4 py-2.5 rounded-full font-mono text-sm tracking-wider shadow-[0_0_20px_rgba(16,185,129,0.2)] backdrop-blur-md">
+            <div className="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></div>
+            HEATMAP ONLINE
+          </div>
+          
+          <div className={`flex items-center gap-2 px-3 py-1 rounded-full font-mono text-xs tracking-wider backdrop-blur-md border ${isConnected ? 'bg-green-900/30 border-green-500/50 text-green-400' : 'bg-red-900/30 border-red-500/50 text-red-400'}`}>
+            <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-green-400' : 'bg-red-400 animate-pulse'}`}></div>
+            {isConnected ? 'BACKEND CONNECTED' : 'DISCONNECTED'}
+          </div>
         </div>
       </div>
 
