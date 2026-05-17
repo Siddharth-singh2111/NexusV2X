@@ -13,7 +13,10 @@ if 'SUMO_HOME' in os.environ:
 else:
     sys.exit("Please declare environment variable 'SUMO_HOME'")
 
-sumoCmd = ["sumo-gui", "-c", "sumo_config.sumocfg"]
+if os.environ.get('HEADLESS', '0') == '1':
+    sumoCmd = ["sumo", "-c", "sumo_config.sumocfg"]
+else:
+    sumoCmd = ["sumo-gui", "-c", "sumo_config.sumocfg"]
 
 # 2. Wireless Noise Logic (Rayleigh Fading)
 def apply_wireless_noise(lon, lat):
@@ -31,8 +34,9 @@ def apply_wireless_noise(lon, lat):
     return noisy_lon, noisy_lat
 
 # 3. Kafka Producer Initialization
+kafka_broker = os.environ.get('KAFKA_BROKER', 'localhost:9092')
 producer = KafkaProducer(
-    bootstrap_servers=['localhost:9092'],
+    bootstrap_servers=[kafka_broker],
     value_serializer=lambda v: json.dumps(v).encode('utf-8')
 )
 

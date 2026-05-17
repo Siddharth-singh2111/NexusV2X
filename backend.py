@@ -2,6 +2,7 @@ import json
 import asyncio
 import numpy as np
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+import os
 # pyrefly: ignore [missing-import]
 import redis.asyncio as redis
 # pyrefly: ignore [missing-import]
@@ -51,7 +52,9 @@ class KalmanFilter2D:
 vehicle_filters = {}
 
 # Connect to the Dockerized Redis
-redis_client = redis.Redis(host='localhost', port=6379, db=0)
+redis_host = os.environ.get('REDIS_HOST', 'localhost')
+redis_port = int(os.environ.get('REDIS_PORT', 6379))
+redis_client = redis.Redis(host=redis_host, port=redis_port, db=0)
 # ==========================================
 # 2.5 WEBSOCKET CONNECTION MANAGER
 # ==========================================
@@ -77,9 +80,10 @@ manager = ConnectionManager()
 
 
 async def consume_kafka():
+    kafka_broker = os.environ.get('KAFKA_BROKER', 'localhost:9092')
     consumer = AIOKafkaConsumer(
         'v2x-telemetry',
-        bootstrap_servers='localhost:9092',
+        bootstrap_servers=kafka_broker,
         value_deserializer=lambda m: json.loads(m.decode('utf-8')),
         auto_offset_reset='latest'
     )
